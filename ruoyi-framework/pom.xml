@@ -119,6 +119,15 @@
 			<version>${pagehelper.boot.version}</version>
 		</dependency>
 
+		<!-- spring-boot-starter-data-redis 加入redis缓存 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+	      <groupId>org.apache.commons</groupId>
+	      <artifactId>commons-pool2</artifactId>
+	    </dependency>
     </dependencies>
     
 </project>
