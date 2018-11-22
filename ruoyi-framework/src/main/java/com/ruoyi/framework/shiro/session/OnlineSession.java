@@ -2,7 +2,6 @@ package com.ruoyi.framework.shiro.session;
 
 import org.apache.shiro.session.mgt.SimpleSession;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ruoyi.common.enums.OnlineStatus;
 
 /**
@@ -10,8 +9,7 @@ import com.ruoyi.common.enums.OnlineStatus;
  * 
  * @author ruoyi
  */
-@JsonIgnoreProperties(value = { "valid","attributeKeys","attributesLazy", "stopped", "alteredFieldsBitMask", "fieldPresent"}) 
-public class OnlineSession extends SimpleSession 
+public class OnlineSession extends SimpleSession
 {
     private static final long serialVersionUID = 1L;
 
