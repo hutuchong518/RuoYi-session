@@ -2,6 +2,7 @@ package com.ruoyi.framework.shiro.realm;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -19,7 +20,9 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.ruoyi.framework.shiro.service.LoginService;
+import org.springframework.context.annotation.Lazy;
+
+import com.ruoyi.framework.shiro.service.SysLoginService;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.framework.web.exception.user.CaptchaException;
 import com.ruoyi.framework.web.exception.user.RoleBlockedException;
@@ -36,18 +39,21 @@ import com.ruoyi.system.service.ISysRoleService;
  * 
  * @author ruoyi
  */
-public class UserRealm extends AuthorizingRealm
+public class UserRealm extends AuthorizingRealm 
 {
     private static final Logger log = LoggerFactory.getLogger(UserRealm.class);
 
     @Autowired
+    @Lazy //就是这里，必须延时加载，根本原因是bean实例化的顺序上，shiro的bean必须要先实例化，否则@Cacheable注解无效，理论上可以用@Order控制顺序
     private ISysMenuService menuService;
 
     @Autowired
+    @Lazy //就是这里，必须延时加载，根本原因是bean实例化的顺序上，shiro的bean必须要先实例化，否则@Cacheable注解无效，理论上可以用@Order控制顺序
     private ISysRoleService roleService;
 
     @Autowired
-    private LoginService loginService;
+    @Lazy //就是这里，必须延时加载，根本原因是bean实例化的顺序上，shiro的bean必须要先实例化，否则@Cacheable注解无效，理论上可以用@Order控制顺序
+    private SysLoginService loginService;
 
     /**
      * 授权
@@ -55,7 +61,7 @@ public class UserRealm extends AuthorizingRealm
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
-        SysUser user = ShiroUtils.getUser();
+        SysUser user = ShiroUtils.getSysUser();
         // 角色列表
         Set<String> roles = new HashSet<String>();
         // 功能列表
@@ -127,7 +133,8 @@ public class UserRealm extends AuthorizingRealm
             log.info("对用户[" + username + "]进行登录验证..验证未通过{}", e.getMessage());
             throw new AuthenticationException(e.getMessage(), e);
         }
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, password, getName());
+        ShiroUtils.getSession().setAttribute("sysUser", user);
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user.getLoginName(), password, getName());
         return info;
     }
 

@@ -1,18 +1,21 @@
 package com.ruoyi.framework.shiro.web.filter.online;
 
 import java.io.IOException;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import com.ruoyi.common.constant.ShiroConstants;
 import com.ruoyi.common.enums.OnlineStatus;
 import com.ruoyi.framework.shiro.session.OnlineSession;
-import com.ruoyi.framework.shiro.session.OnlineSessionDAO;
+import com.ruoyi.framework.shiro.session.SessionDao;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysUser;
 
@@ -30,7 +33,9 @@ public class OnlineSessionFilter extends AccessControlFilter
     private String loginUrl;
 
     @Autowired
-    private OnlineSessionDAO onlineSessionDAO;
+//    private OnlineSessionDAO onlineSessionDAO;
+//    @Autowired
+    private SessionDao sessionDao;
 
     /**
      * 表示是否允许访问；mappedValue就是[urls]配置中拦截器参数部分，如果允许访问返回true，否则false；
@@ -44,7 +49,7 @@ public class OnlineSessionFilter extends AccessControlFilter
         {
             return true;
         }
-        Session session = onlineSessionDAO.readSession(subject.getSession().getId());
+        Session session = sessionDao.readSession(subject.getSession().getId());
         if (session != null && session instanceof OnlineSession)
         {
             OnlineSession onlineSession = (OnlineSession) session;
@@ -53,7 +58,7 @@ public class OnlineSessionFilter extends AccessControlFilter
             boolean isGuest = onlineSession.getUserId() == null || onlineSession.getUserId() == 0L;
             if (isGuest == true)
             {
-                SysUser user = ShiroUtils.getUser();
+                SysUser user = ShiroUtils.getSysUser();
                 if (user != null)
                 {
                     onlineSession.setUserId(user.getUserId());
