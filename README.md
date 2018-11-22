@@ -2,7 +2,7 @@
 
 ---
 #### 1、ROUYI最新版本（2018-11-22）集成redis，将session放入redis，可实现集群部署;
-#### 2、可在方法上赶写使用@Cacheable将数据缓存到redis;
+#### 2、可在方法上使用@Cacheable将数据缓存到redis;
 ```java
   @CacheConfig(cacheNames = "SsoCache")
   public class SsoCache{
