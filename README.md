@@ -1,5 +1,21 @@
 ## 平台简介
 
+---
+#### 1、ROUYI最新版本（2018-11-22）集成redis，将session放入redis，可实现集群部署;
+#### 2、可在方法上赶写使用@Cacheable将数据缓存到redis;
+```java
+  @CacheConfig(cacheNames = "SsoCache")
+  public class SsoCache{
+	@Cacheable(keyGenerator = "cacheKeyGenerator")
+	public String getTokenByGsid(String gsid) 
+	}
+	//二者选其一,可以使用value上的信息，来替换类上cacheNames的信息
+	@Cacheable(value = "BasicDataCache",keyGenerator = "cacheKeyGenerator")
+	public String getTokenByGsid(String gsid){}
+}
+``` 
+#### 3、欢迎fork此版本
+---
 
 2018年度最受欢迎中国开源软件评选  
 请给若依/RuoYi 投票，谢谢支持。  
@@ -62,11 +78,11 @@ http://webapplayers.com/inspinia_admin-v2.7.1
         <td><img src="https://static.oschina.net/uploads/space/2018/1005/194612_kJ4F_1438828.png"/></td>
         <td><img src="https://static.oschina.net/uploads/space/2018/1005/194623_YEXO_1438828.png"/></td>
     </tr>
-	<tr>
+    <tr>
         <td><img src="https://static.oschina.net/uploads/space/2018/0902/132548_ne4U_1438828.png"/></td>
         <td><img src="https://static.oschina.net/uploads/space/2018/1005/194643_MsxF_1438828.png"/></td>
     </tr>
-	<tr>
+    <tr>
         <td><img src="https://static.oschina.net/uploads/space/2018/1005/194658_40L4_1438828.png"/></td>
         <td><img src="https://static.oschina.net/uploads/space/2018/1005/194712_2ma3_1438828.png"/></td>
     </tr>
