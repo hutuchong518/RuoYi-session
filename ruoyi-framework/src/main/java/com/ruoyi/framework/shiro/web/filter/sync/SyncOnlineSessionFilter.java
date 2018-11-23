@@ -16,7 +16,7 @@ import com.ruoyi.framework.shiro.session.OnlineSessionDAO;
 public class SyncOnlineSessionFilter extends PathMatchingFilter
 {
     @Autowired
-    private OnlineSessionDAO onlineSessionDAO;
+    private SessionDao sessionDao;
 
     /**
      * 同步会话数据到DB 一次请求最多同步一次 防止过多处理 需要放到Shiro过滤器之前
@@ -34,7 +34,7 @@ public class SyncOnlineSessionFilter extends PathMatchingFilter
         // session停止时间，如果stopTimestamp不为null，则代表已停止
         if (session != null && session.getUserId() != null && session.getStopTimestamp() == null)
         {
-            onlineSessionDAO.syncToDb(session);
+            sessionDao.syncToDb(session);
         }
         return true;
     }
