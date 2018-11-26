@@ -44,15 +44,12 @@ public class UserRealm extends AuthorizingRealm
     private static final Logger log = LoggerFactory.getLogger(UserRealm.class);
 
     @Autowired
-    @Lazy //就是这里，必须延时加载，根本原因是bean实例化的顺序上，shiro的bean必须要先实例化，否则@Cacheable注解无效，理论上可以用@Order控制顺序
     private ISysMenuService menuService;
 
     @Autowired
-    @Lazy //就是这里，必须延时加载，根本原因是bean实例化的顺序上，shiro的bean必须要先实例化，否则@Cacheable注解无效，理论上可以用@Order控制顺序
     private ISysRoleService roleService;
 
     @Autowired
-    @Lazy //就是这里，必须延时加载，根本原因是bean实例化的顺序上，shiro的bean必须要先实例化，否则@Cacheable注解无效，理论上可以用@Order控制顺序
     private SysLoginService loginService;
 
     /**
@@ -144,4 +141,20 @@ public class UserRealm extends AuthorizingRealm
     {
         this.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
     }
+
+    @Override
+    protected Object getAuthorizationCacheKey(PrincipalCollection principals) {
+
+        Object obj = principals.getPrimaryPrincipal();
+        StringBuilder key;
+        if(obj instanceof SysUser){
+            SysUser user = (SysUser)obj;
+            key = new StringBuilder(user.getLoginName());
+        }else{
+            key = new StringBuilder(ShiroUtils.getSysUser().getLoginName());
+        }
+
+        return key.append(":authorization").toString();
+    }
+
 }

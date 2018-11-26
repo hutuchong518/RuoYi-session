@@ -2,6 +2,8 @@ package com.ruoyi.framework.shiro.web.filter.sync;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import com.ruoyi.framework.shiro.session.SessionDao;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.ruoyi.common.constant.ShiroConstants;
