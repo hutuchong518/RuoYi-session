@@ -141,17 +141,20 @@ public class UserRealm extends AuthorizingRealm
     {
         this.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
     }
-    
+
     @Override
     protected Object getAuthorizationCacheKey(PrincipalCollection principals) {
+
         Object obj = principals.getPrimaryPrincipal();
-        String key="";
+        StringBuilder key;
         if(obj instanceof SysUser){
-        	SysUser u = (SysUser)obj;
-        	key = u.getLoginName();
+            SysUser user = (SysUser)obj;
+            key = new StringBuilder(user.getLoginName());
         }else{
-        	key = obj.toString();
+            key = new StringBuilder(ShiroUtils.getSysUser().getLoginName());
         }
-    	return key;
+
+        return key.append(":authorization").toString();
     }
+
 }
