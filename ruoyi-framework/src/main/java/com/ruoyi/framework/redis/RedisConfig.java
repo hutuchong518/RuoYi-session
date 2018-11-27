@@ -35,22 +35,6 @@ public class RedisConfig extends CachingConfigurerSupport {
 	@Resource
 	private LettuceConnectionFactory lettuceConnectionFactory;
 
-	@Bean
-	public KeyGenerator keyGenerator() {
-		return new KeyGenerator() {
-			@Override
-			public Object generate(Object target, Method method, Object... params) {
-				StringBuffer sb = new StringBuffer();
-				sb.append(target.getClass().getName());
-				sb.append(method.getName());
-				for (Object obj : params) {
-					sb.append(obj.toString());
-				}
-				return sb.toString();
-			}
-		};
-	}
-
 	// 缓存管理器
 	@Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {

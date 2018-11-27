@@ -3,6 +3,10 @@ package com.ruoyi.system.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+
 import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUser;
@@ -12,6 +16,7 @@ import com.ruoyi.system.domain.SysUser;
  * 
  * @author ruoyi
  */
+@CacheConfig(cacheNames = "menuCache")
 public interface ISysMenuService
 {
     /**
@@ -20,6 +25,8 @@ public interface ISysMenuService
      * @param user 用户信息
      * @return 菜单列表
      */
+	//@Cacheable(keyGenerator = RedisConstants.REDIS_KEY_GENERATOR)
+    @Cacheable(key = "#root.targetClass.simpleName+':'+#root.methodName+':'+#user.userId")
     public List<SysMenu> selectMenusByUser(SysUser user);
 
     /**
