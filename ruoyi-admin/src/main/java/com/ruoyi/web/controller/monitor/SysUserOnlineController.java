@@ -82,6 +82,7 @@ public class SysUserOnlineController extends BaseController
             }
             onlineSession.setStatus(OnlineStatus.off_line);
             online.setStatus(OnlineStatus.off_line);
+            sessionDao.deleteSession(onlineSession);
             userOnlineService.saveOnline(online);
         }
         return success();
