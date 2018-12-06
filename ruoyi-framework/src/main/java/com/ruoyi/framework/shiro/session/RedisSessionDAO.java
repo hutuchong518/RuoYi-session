@@ -44,7 +44,7 @@ public class RedisSessionDAO extends EnterpriseCacheSessionDAO
     /**
      * shiro redis 前缀
      */
-    private final static String SYS_SHIRO_SESSION_ID = "sys-shiro-session-id:";
+    private final static String SYS_SHIRO_SESSION_ID = "shiro_redis_session:";
 
     /**
      * 上次同步数据库的时间戳
@@ -65,6 +65,7 @@ public class RedisSessionDAO extends EnterpriseCacheSessionDAO
     public Session readSession(Serializable sessionId)
     {
         String key = SYS_SHIRO_SESSION_ID + sessionId;
+        System.out.println("key:::"+key);
         Object obj = redisTemplate.opsForValue().get(key);
         OnlineSession session = (OnlineSession)obj ;
         return session;

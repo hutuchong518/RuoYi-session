@@ -1,7 +1,6 @@
 package com.ruoyi.framework.shiro.session;
 
 import org.apache.shiro.session.mgt.SimpleSession;
-
 import com.ruoyi.common.enums.OnlineStatus;
 
 /**

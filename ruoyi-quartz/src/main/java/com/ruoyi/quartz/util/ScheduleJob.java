@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.ScheduleConstants;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.quartz.domain.SysJob;
 import com.ruoyi.quartz.domain.SysJobLog;
@@ -22,6 +24,7 @@ import com.ruoyi.quartz.service.ISysJobLogService;
  * @author ruoyi
  *
  */
+@DisallowConcurrentExecution
 public class ScheduleJob extends QuartzJobBean
 {
     private static final Logger log = LoggerFactory.getLogger(ScheduleJob.class);
@@ -67,7 +70,7 @@ public class ScheduleJob extends QuartzJobBean
             jobLog.setJobMessage(job.getJobName() + " 总共耗时：" + times + "毫秒");
             // 任务状态 0：成功 1：失败
             jobLog.setStatus(Constants.FAIL);
-            jobLog.setExceptionInfo(e.toString());
+            jobLog.setExceptionInfo(StringUtils.substring(e.getMessage(), 0, 2000));
         }
         finally
         {

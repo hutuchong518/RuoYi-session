@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.monitor;
 
 import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,17 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.base.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.enums.OnlineStatus;
 import com.ruoyi.framework.shiro.session.OnlineSession;
-import com.ruoyi.framework.shiro.session.OnlineSessionDAO;
+import com.ruoyi.framework.shiro.session.SessionDao;
 import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.framework.web.base.BaseController;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.system.domain.SysUserOnline;
 import com.ruoyi.system.service.impl.SysUserOnlineServiceImpl;
-import com.ruoyi.framework.web.base.BaseController;
 
 /**
  * 在线用户监控
@@ -36,7 +38,8 @@ public class SysUserOnlineController extends BaseController
     private SysUserOnlineServiceImpl userOnlineService;
 
     @Autowired
-    private OnlineSessionDAO onlineSessionDAO;
+//    private OnlineSessionDAO onlineSessionDAO;
+    private SessionDao sessionDao;
 
     @RequiresPermissions("monitor:online:view")
     @GetMapping()
@@ -68,7 +71,7 @@ public class SysUserOnlineController extends BaseController
             {
                 return error("用户已下线");
             }
-            OnlineSession onlineSession = (OnlineSession) onlineSessionDAO.readSession(online.getSessionId());
+            OnlineSession onlineSession = (OnlineSession) sessionDao.readSession(online.getSessionId());
             if (onlineSession == null)
             {
                 return error("用户已下线");
@@ -85,7 +88,7 @@ public class SysUserOnlineController extends BaseController
     }
 
     @RequiresPermissions("monitor:online:forceLogout")
-    @Log(title = "在线用户", businessType = BusinessType.FORCE)
+    @Log(title = "在线用户强退", businessType = BusinessType.FORCE)
     @PostMapping("/forceLogout")
     @ResponseBody
     public AjaxResult forceLogout(String sessionId)
@@ -99,7 +102,7 @@ public class SysUserOnlineController extends BaseController
         {
             return error("用户已下线");
         }
-        OnlineSession onlineSession = (OnlineSession) onlineSessionDAO.readSession(online.getSessionId());
+        OnlineSession onlineSession = (OnlineSession) sessionDao.readSession(online.getSessionId());
         if (onlineSession == null)
         {
             return error("用户已下线");
@@ -107,6 +110,7 @@ public class SysUserOnlineController extends BaseController
         onlineSession.setStatus(OnlineStatus.off_line);
         online.setStatus(OnlineStatus.off_line);
         userOnlineService.saveOnline(online);
+        sessionDao.deleteSession(onlineSession);
         return success();
     }
 }

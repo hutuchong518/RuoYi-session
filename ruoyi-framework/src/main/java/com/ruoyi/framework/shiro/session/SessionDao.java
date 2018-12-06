@@ -43,6 +43,19 @@ public class SessionDao
         }
         return session;
     }
+    
+    public Session deleteSession(Session session)
+    {
+        if (redisEnabled)
+        {
+            redisSessionDAO.doDelete(session);
+        }
+        else
+        {
+            onlineSessionDAO.doDelete(session);
+        }
+        return session;
+    }
 
     /**
      * 同步会话到DB

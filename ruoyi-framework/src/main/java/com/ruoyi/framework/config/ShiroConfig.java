@@ -2,7 +2,6 @@ package com.ruoyi.framework.config;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import javax.servlet.Filter;
 
 import org.apache.shiro.cache.CacheManager;
@@ -18,9 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.shiro.cache.RedisCacheManager;
 import com.ruoyi.framework.shiro.realm.UserRealm;
@@ -33,6 +29,7 @@ import com.ruoyi.framework.shiro.web.filter.online.OnlineSessionFilter;
 import com.ruoyi.framework.shiro.web.filter.sync.SyncOnlineSessionFilter;
 import com.ruoyi.framework.shiro.web.session.OnlineWebSessionManager;
 import com.ruoyi.framework.shiro.web.session.SpringSessionValidationScheduler;
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 
 /**
  * 权限配置加载

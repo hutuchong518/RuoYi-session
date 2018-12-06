@@ -107,13 +107,22 @@ $(function() {
 	var expandFlag = false;
 	$("#expandAllBtn").click(function() {
 	    if (expandFlag) {
-	        $('#bootstrap-table').bootstrapTreeTable('expandAll');
+	        $('#bootstrap-tree-table').bootstrapTreeTable('expandAll');
 	    } else {
-	        $('#bootstrap-table').bootstrapTreeTable('collapseAll');
+	        $('#bootstrap-tree-table').bootstrapTreeTable('collapseAll');
 	    }
 	    expandFlag = expandFlag ? false: true;
 	})
 });
+
+/** 刷新选项卡 */
+var refreshItem = function(){
+    var topWindow = $(window.parent.document);
+	var currentId = $('.page-tabs-content', topWindow).find('.active').attr('data-id');
+	var target = $('.RuoYi_iframe[data-id="' + currentId + '"]', topWindow);
+    var url = target.attr('src');
+    target.attr('src', url).ready();
+}
 
 /** 创建选项卡 */
 function createMenuItem(dataUrl, menuName) {
@@ -153,6 +162,22 @@ function createMenuItem(dataUrl, menuName) {
     }
     return false;
 }
+
+//日志打印封装处理
+var log = {
+    log: function (msg) {
+    	console.log(msg);
+    },
+    info: function(msg) {
+    	console.info(msg);
+    },
+    warn: function(msg) {
+    	console.warn(msg);
+    },
+    error: function(msg) {
+    	console.error(msg);
+    }
+};
 
 /** 设置全局ajax处理 */
 $.ajaxSetup({

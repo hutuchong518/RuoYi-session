@@ -20,8 +20,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-
 import com.ruoyi.framework.shiro.service.SysLoginService;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.framework.web.exception.user.CaptchaException;

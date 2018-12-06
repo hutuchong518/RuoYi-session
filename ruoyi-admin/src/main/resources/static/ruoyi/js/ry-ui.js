@@ -17,6 +17,7 @@
                 _sortOrder = $.common.isEmpty(options.sortOrder) ? "asc" : options.sortOrder;
                 _sortName = $.common.isEmpty(options.sortName) ? "" : options.sortName;
                 _striped = $.common.isEmpty(options.striped) ? false : options.striped;
+                _escape = $.common.isEmpty(options.escape) ? false : options.escape;
                 $('#bootstrap-table').bootstrapTable({
                     url: options.url,                                   // 请求后台的URL（*）
                     contentType: "application/x-www-form-urlencoded",   // 编码类型
@@ -31,9 +32,10 @@
                     pageNumber: 1,                                      // 初始化加载第一页，默认第一页
                     pageSize: 10,                                       // 每页的记录行数（*） 
                     pageList: [10, 25, 50],                             // 可供选择的每页的行数（*）
+                    escape: _escape,                                    // 转义HTML字符串
                     iconSize: 'outline',                                // 图标大小：undefined默认的按钮尺寸 xs超小按钮sm小按钮lg大按钮
         	        toolbar: '#toolbar',                                // 指定工作栏
-                    sidePagination: "server",                           // 启用服务端分页 
+                    sidePagination: "server",                           // 启用服务端分页
                     search: $.common.visible(options.search),           // 是否显示搜索框功能
                     showSearch: $.common.visible(options.showSearch),   // 是否显示检索信息
                     showRefresh: $.common.visible(options.showRefresh), // 是否显示刷新按钮
@@ -99,7 +101,6 @@
             // 刷新表格
             refresh: function() {
                 $("#bootstrap-table").bootstrapTable('refresh', {
-                    url: $.table._option.url,
                     silent: true
                 });
             },
@@ -125,6 +126,14 @@
                     }
                 });
                 return actions.join('');
+            },
+            // 显示表格指定列
+            showColumn: function(column) {
+                $("#bootstrap-table").bootstrapTable('showColumn', column);
+            },
+            // 隐藏表格指定列
+            hideColumn: function(column) {
+            	$("#bootstrap-table").bootstrapTable('hideColumn', column);
             }
         },
         // 表格树封装处理
@@ -135,7 +144,7 @@
                 $.table._option = options;
                 _striped = $.common.isEmpty(options.striped) ? false : options.striped;
                 _expandColumn = $.common.isEmpty(options.expandColumn) ? '1' : options.expandColumn;
-                var treeTable = $('#bootstrap-table').bootstrapTreeTable({
+                var treeTable = $('#bootstrap-tree-table').bootstrapTreeTable({
                 	code: options.code,                                 // 用于设置父子关系
         		    parentCode: options.parentCode,                     // 用于设置父子关系
         	    	type: 'get',                                        // 请求方式（*）
@@ -495,7 +504,7 @@
             },
             // 工具栏表格树修改
             editTree: function() {
-            	var row = $('#bootstrap-table').bootstrapTreeTable('getSelections')[0];
+            	var row = $('#bootstrap-tree-table').bootstrapTreeTable('getSelections')[0];
             	if ($.common.isEmpty(row)) {
         			$.modal.alertWarning("请至少选择一条记录");
         			return;
@@ -528,7 +537,7 @@
         	        dataType: "json",
         	        data: data,
         	        success: function(result) {
-        	        	$.operate.saveSuccess(result);
+        	        	$.operate.successCallback(result);
         	        }
         	    };
         	    $.ajax(config)
@@ -543,7 +552,7 @@
                 }
             	$.modal.closeLoading();
             },
-            // 保存结果提示msg
+            // 成功结果提示msg（父窗体全局更新）
             saveSuccess: function (result) {
             	if (result.code == web_status.SUCCESS) {
             		$.modal.msgReload("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
@@ -551,6 +560,25 @@
                 	$.modal.alertError(result.msg);
                 }
             	$.modal.closeLoading();
+            },
+            // 成功回调执行事件（父窗体静默更新）
+            successCallback: function(result) {
+                if (result.code == web_status.SUCCESS) {
+                    if (window.parent.$("#bootstrap-table").length > 0) {
+                        $.modal.close();
+                        window.parent.$.modal.msgSuccess(result.msg);
+                        window.parent.$.table.refresh();
+                    } else if (window.parent.$("#bootstrap-tree-table").length > 0) {
+                        $.modal.close();
+                        window.parent.$.modal.msgSuccess(result.msg);
+                        window.parent.$.treeTable.refresh();
+                    } else {
+                        $.modal.msgReload("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+                    }
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
             }
         },
         // 校验封装处理
@@ -716,6 +744,17 @@
     		    }
         		return true;
         	},
+        	// 不允许最后层级节点选择
+        	notAllowLastLevel: function(_tree) {
+    		    var nodes = _tree.getSelectedNodes();
+    		    for (var i = 0; i < nodes.length; i++) {
+    		    	if (nodes[i].level == nodes.length + 1) {
+    		    		$.modal.msgError("不能选择最后层级节点（" + nodes[i].name + "）");
+    		            return false;
+    		        }
+    		    }
+        		return true;
+        	},
         	// 隐藏/显示搜索栏
         	toggleSearch: function() {
         		$('#search').slideToggle(200);
@@ -762,6 +801,14 @@
             // 指定随机数返回
             random: function (min, max) {
                 return Math.floor((Math.random() * max) + min);
+            },
+            startWith: function(value, start) {
+                var reg = new RegExp("^" + start);
+                return reg.test(value)
+            },
+            endWith: function(value, end) {
+                var reg = new RegExp(end + "$");
+                return reg.test(value)
             }
         }
     });
